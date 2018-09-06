@@ -5,41 +5,45 @@
 # Due Date:      09/06/2018
 # Signature:     JHW
 # Score:
-from math import trunc
 from random import randrange
 
 
-def binary_search(array, right, left, target):
-    # binary search here
-    print("binary search")
-    left = 0
-    while left <= right:
-        middle = trunc((left + right) / 2)
-        if array[middle] < target:
-            left = middle + 1
-        elif array[middle] > target:
-            right = middle - 1
+def binary_search(array, left, right, target):
+    # If our target value is found within the portion of the array, we will insert at that index.
+    # If the target is not found, we will insert at the current middle position after the search has completed.
+    target_found = False
+    middle = None
+    while left <= right and not target_found:
+        middle = (left + right) // 2
+        if array[middle] == target:
+            target_found = True
         else:
-            return middle
+            if target < array[middle]:
+                right = middle - 1
+            else:
+                left = middle + 1
+
+    return middle
 
 
 def insertion_sort(array):
-    # insertion sort
-    print("insertion sort")
     for i in range(1, len(array)):
-        to_insert = binary_search(array, i, array[i])
-        swap_value = array[i]
-        j = i - 1
-        while j >= to_insert:
-            array[j + 1] = array[j]
-            j -= 1
-        array[to_insert] = swap_value
+        # Value to be inserted
+        insert_val = array[i]
+        # Determine insertion index using binary search
+        insert_index = binary_search(array, 0, i - 1, insert_val)
+        # Perform an additional comparison to make sure our insertion value is not greater than the value at
+        # the insertion point.
+        if insert_val > array[insert_index]:
+            insert_index += 1
+        # Perform insertion of value and shift array
+        array = array[:insert_index] + [insert_val] + array[insert_index:i] + array[i + 1:]
 
     return array
 
 
 unsorted_array = []
-for i in range(0, 19):
+for idx in range(0, 49):
     unsorted_array.append(randrange(50))
 
 sorted_array = insertion_sort(unsorted_array)
